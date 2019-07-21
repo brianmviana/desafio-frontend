@@ -1,30 +1,21 @@
-# todolist
+# TODO List
 
-> A Vue.js project
+Projeto de um TODO List feito em Vue.js com um banco de dados NoSQL Document DB do Firebase.
 
 ## Build Setup
 
 ``` bash
-# install dependencies
+git clone
+
+# instala as dependencias
 npm install
 
-# serve with hot reload at localhost:8080
+# Adicione seu projeto do Firebase na main.js
+
+# Inicializa a aplicação vue na url: localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Dicas
+
+Se você receber um `permission error`, Certifique-se de permitir o acesso de leitura / gravação ao seu banco de dados no console do Firebase. 
