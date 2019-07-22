@@ -21,10 +21,10 @@
         <b-container>
             <b-navbar variant="faded" type="light">
                 <b-navbar-nav>
-<!--                    <b-nav-form>-->
-<!--                        <b-form-input size="sm" class="mr-sm-2" placeholder="Titulo"></b-form-input>-->
-<!--                        <b-button size="sm" class="my-2 my-sm-0" >Buscar</b-button>-->
-<!--                    </b-nav-form>-->
+                    <b-nav-form>
+                        <b-form-input size="sm" class="mr-sm-2" placeholder="Titulo"></b-form-input>
+                        <b-button size="sm" class="my-2 my-sm-0" >Buscar</b-button>
+                    </b-nav-form>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item-dropdown text="Prioridade" right>
@@ -47,8 +47,8 @@
                         <tr>
                             <th scope="col" colspan="1">#</th>
                             <th scope="col" colspan="1">Titulo</th>
-                            <th scope="col" colspan="1">Prioridade</th>
                             <th scope="col" colspan="2">Descrição</th>
+                            <th scope="col" colspan="1">Prioridade</th>
                             <th scope="col" colspan="1">Status</th>
                             <th scope="col" colspan="1" class="text-right">
                                 <b-button v-b-modal.modal-add-item variant="primary">+</b-button>
@@ -59,28 +59,26 @@
                         <tr v-for="item in items">
                             <th scope="row"></th>
                             <td> {{item.titulo}}</td>
-                            <td> {{item.prioridade}}</td>
                             <td colspan="2"> {{item.descricao}}</td>
-                            <td> {{item.status}}</td>
+                            <td>
+                                <b-form-select v-model="item.prioridade"  :options="optionsPrioridade" v-on:change="updateItemStatus(item)"  size="sm" class="mt-3"></b-form-select>
+                            </td>
+                            <td>
+                                <b-form-select v-model="item.status"  :options="optionsStatus" v-on:change="updateItemStatus(item)"  size="sm" class="mt-3"></b-form-select>
+                            </td>
                             <td class="text-right">
-                                <b-button :variant="item.status != 'concluido' ? 'success' : 'warning'" @click.stop="
-                                    if(item.status == 'aberto'){
-                                        item.status = 'concluido'
-                                    }else{
-                                        item.status = 'aberto'
-                                    }
-                                    updateItemStatus(item);
-                                ">{{item.status == 'concluido' ? 'Deixar em aberto' : 'Concluir'}}</b-button>
 
-                                <b-button v-b-modal.modal-editar variant="info" @click.stop="editarItem(item.key)">Editar</b-button>
+                                <b-button variant="secondary" @click.stop="editarItem(item.key)" v-b-modal.modal-editar>Editar</b-button>
 
-                                <b-button variant="danger" @click.stop="deleteItem(item.key)">Remover</b-button>
+                                <b-button variant="danger" @click="showMsgBoxConfirm(item)" >Remover</b-button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </b-col>
             </b-row>
+
+<!--@click.stop="deleteItem(item.key)"-->
 
 <!-- Modal de Cadastro do item -->
             <b-modal
@@ -90,6 +88,7 @@
                     @show="resetModalItem"
                     @hidden="resetModalItem"
                     @ok="handleOk"
+                    centered
             >
                 <form ref="form_add_item" @submit.stop.prevent="handleSubmit">
                     <b-form-group
@@ -137,6 +136,7 @@
                     @show="resetModalItem"
                     @hidden="resetModalItem"
                     @ok="handleUpdate"
+                    centered
             >
                 <form ref="form_add_item" @submit.stop.prevent="handleSubmit">
                     <b-form-group
@@ -209,6 +209,15 @@
                     { value: 'Baixa', text: 'Baixa' },
                     { value: 'Media', text: 'Media' },
                     { value: 'Alta', text: 'Alta' },
+                ],
+                optionsPrioridade: [
+                    { value: 'Baixa', text: 'Baixa' },
+                    { value: 'Media', text: 'Media' },
+                    { value: 'Alta', text: 'Alta'  },
+                ],
+                optionsStatus: [
+                    { value: 'aberto', text: 'Aberto' },
+                    { value: 'concluido', text: 'Concluido' },
                 ],
                 ref: fb.firestore().collection('items'),
                 usuario: fb.auth().currentUser
@@ -299,8 +308,29 @@
                     this.$router.replace('login')
                 })
             },
+            showMsgBoxConfirm(item) {
+                this.$bvModal.msgBoxConfirm('Deseja remover o item ' + item.titulo , {
+                    title: 'Remover Item?',
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    okTitle: 'Remover',
+                    cancelTitle: 'Cancelar',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                })
+                .then(value => {
+                    if(value){
+                        this.deleteItem(item.key);
+                    }
+                })
+                .catch(err => {
+                        // An error occurred
+                });
+            },
 
-            deleteItem (id) {
+            deleteItem(id) {
                 fb.firestore().collection('items').doc(id).delete().then(() => {
                     //ação ao deletar item
                 }).catch((error) => {
@@ -403,5 +433,8 @@
 </script>
 
 <style scoped>
+    .mt-3, .my-3 {
+        margin-top: 0rem !important;
+    }
 
 </style>
