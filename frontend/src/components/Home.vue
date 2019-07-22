@@ -57,7 +57,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="item in items">
-                            <th scope="row"></th>
+                            <th scope="row">{{item.posicao}}</th>
                             <td> {{item.titulo}}</td>
                             <td colspan="2"> {{item.descricao}}</td>
                             <td>
@@ -68,9 +68,9 @@
                             </td>
                             <td class="text-right">
 
-                                <b-button variant="secondary" @click.stop="editarItem(item.key)" v-b-modal.modal-editar>Editar</b-button>
+                                <b-button variant="secondary" size="sm" @click.stop="editarItem(item.key)" v-b-modal.modal-editar>Editar</b-button>
 
-                                <b-button variant="danger" @click="showMsgBoxConfirm(item)" >Remover</b-button>
+                                <b-button variant="danger" size="sm" @click="showMsgBoxConfirm(item)" >Remover</b-button>
                             </td>
                         </tr>
                         </tbody>
