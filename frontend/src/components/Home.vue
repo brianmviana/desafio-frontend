@@ -224,7 +224,7 @@
             }
         },
         created () {
-            this.ref.onSnapshot((querySnapshot) => {
+            this.ref.orderBy("posicao").onSnapshot((querySnapshot) => {
                 this.items = [];
                 querySnapshot.forEach((doc) => {
                     if(this.usuario.email == doc.data().usuario){
