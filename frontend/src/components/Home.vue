@@ -1,104 +1,133 @@
 <template>
     <div>
         <b-navbar toggleable="lg" type="dark" variant="primary">
-            <b-navbar-brand href="#">TODO LIST</b-navbar-brand>
+            <b-navbar-brand>TODO LIST</b-navbar-brand>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
 
-
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
 
-
-
                     <b-nav-item-dropdown right>
                         <!-- Using 'button-content' slot -->
-                        <template slot="button-content"><em>User</em></template>
-                        <b-dropdown-item >Logout</b-dropdown-item>
+                        <template slot="button-content"><em>{{usuario.email}}</em></template>
+                        <b-dropdown-item v-on:click="logout">Logout</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
         <b-container>
+            <b-navbar variant="faded" type="light">
+                <b-navbar-nav>
+<!--                    <b-nav-item>Home</b-nav-item>-->
+                    <b-nav-form>
+                        <b-form-input size="sm" class="mr-sm-2" placeholder="Titulo"></b-form-input>
+                        <b-button size="sm" class="my-2 my-sm-0" >Buscar</b-button>
+                    </b-nav-form>
+                </b-navbar-nav>
+                <b-navbar-nav class="ml-auto">
+                    <b-nav-item-dropdown text="Prioridade" right>
+                        <b-dropdown-item href="#">Todos</b-dropdown-item>
+                        <b-dropdown-item href="#">Aberto</b-dropdown-item>
+                        <b-dropdown-item href="#">Concluído</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                    <b-nav-item-dropdown text="Status" right>
+                        <b-dropdown-item href="#">Todos</b-dropdown-item>
+                        <b-dropdown-item href="#">Aberto</b-dropdown-item>
+                        <b-dropdown-item href="#">Concluído</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                </b-navbar-nav>
+            </b-navbar>
 
-<!--            <b-row>-->
-<!--                <b-col>-->
-<!--                    <table class="table table-sm">-->
-<!--                        <thead>-->
-<!--                        <tr>-->
-<!--                            <th scope="col" colspan="1">#</th>-->
-<!--                            <th scope="col" colspan="1">Titulo</th>-->
-<!--                            <th scope="col" colspan="1">Prioridade</th>-->
-<!--                            <th scope="col" colspan="2">Descrição</th>-->
-<!--                            <th scope="col" colspan="1" class="text-right">-->
-<!--                                <b-button v-b-modal.modal-add-item variant="primary">+</b-button>-->
-<!--                            </th>-->
-<!--                        </tr>-->
-<!--                        </thead>-->
-<!--                        <tbody>-->
-<!--                        <tr v-for="item in items">-->
-<!--                            <th scope="row">{{item.pos}}</th>-->
-<!--                            <td> {{item.titulo}}</td>-->
-<!--                            <td> {{item.prioridade}}</td>-->
-<!--                            <td colspan="2"> {{item.descricao}}</td>-->
-<!--                            <td class="text-right">-->
-<!--                                <b-button v-b-modal.modal-2 variant="warning">=</b-button>-->
+            <b-row>
+                <b-col>
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th scope="col" colspan="1">#</th>
+                            <th scope="col" colspan="1">Titulo</th>
+                            <th scope="col" colspan="1">Prioridade</th>
+                            <th scope="col" colspan="2">Descrição</th>
+                            <th scope="col" colspan="1">Status</th>
+                            <th scope="col" colspan="1" class="text-right">
+                                <b-button v-b-modal.modal-add-item variant="primary">+</b-button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in items">
+                            <th scope="row"></th>
+                            <td> {{item.titulo}}</td>
+                            <td> {{item.prioridade}}</td>
+                            <td colspan="2"> {{item.descricao}}</td>
+                            <td> {{item.status}}</td>
+                            <td class="text-right">
+                                <b-button :variant="item.status != 'concluido' ? 'success' : 'warning'" @click.stop="
+                                    if(item.status == 'aberto'){
+                                        item.status = 'concluido'
+                                    }else{
+                                        item.status = 'aberto'
+                                    }
+                                    updateItemStatus(item);
+                                ">{{item.status == 'concluido' ? 'Em aberto' : 'Concluir'}}</b-button>
 
-<!--                                <b-button v-b-modal.modal-2 variant="danger">X</b-button>-->
-<!--                            </td>-->
-<!--                        </tr>-->
-<!--                        </tbody>-->
-<!--                    </table>-->
-<!--                </b-col>-->
-<!--            </b-row>-->
-<!--            <b-modal-->
-<!--                    id="modal-add-item"-->
-<!--                    ref="modal_add_item"-->
-<!--                    title="Novo item"-->
-<!--                    @show="resetModal"-->
-<!--                    @hidden="resetModal"-->
-<!--                    @ok="handleOk"-->
-<!--            >-->
-<!--                <form ref="form_add_item" @submit.stop.prevent="handleSubmit">-->
-<!--                    <b-form-group-->
-<!--                            :state="nameState"-->
-<!--                            label="Name"-->
-<!--                            label-for="name-input"-->
-<!--                            invalid-feedback="Name is required"-->
-<!--                    >-->
-<!--                        <b-form-input-->
-<!--                                id="name-input"-->
-<!--                                v-model="name"-->
-<!--                                :state="nameState"-->
-<!--                                required-->
-<!--                        ></b-form-input>-->
-<!--                    </b-form-group>-->
-<!--                </form>-->
-<!--            </b-modal>-->
+                                <b-button v-b-modal.modal-editar variant="info">Editar</b-button>
 
-            <div>
-                <button class="button logout" v-on:click="logout">Logout</button>
-                <article class="covers" v-for="(comic, idx) in comics" :key="idx">
-                    <div>
-                        <img style="margin: 10px" :src="comic.image" height="291px" width="192px">
-                        <p >{{ comic.name }}</p>
-                        <hr>
-                        <button class="button" @click="deleteComic(comic.id)">
-                            Delete
-                        </button>
-                    </div>
-                </article>
+                                <b-button variant="danger" @click.stop="deleteItem(item.key)">Remover</b-button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </b-col>
+            </b-row>
 
-                <form @submit="addComic(name, image)">
-                    <h2>Add a New Comic Cover</h2>
-                    <input v-model="name" placeholder="Comic Name" class="input" required>
-                    <input v-model="image" placeholder="Comic Image URL" class="input" required>
-                    <button type="submit" class="button">Add New Comic</button>
+            <b-modal
+                    id="modal-add-item"
+                    ref="modal_add_item"
+                    title="Novo item"
+                    @show="resetModalItem"
+                    @hidden="resetModalItem"
+                    @ok="handleOk"
+            >
+                <form ref="form_add_item" @submit.stop.prevent="handleSubmit">
+                    <b-form-group
+                            :state="itemtitulostate"
+                            label="Titulo"
+                            label-for="title-input"
+                            invalid-feedback="Titulo não preenchido"
+                    >
+                        <b-form-input
+                                id="title-input"
+                                v-model="itemtitulo"
+                                :state="itemtitulostate"
+                                required
+                        ></b-form-input>
+                    </b-form-group>
+                    <b-form-group
+                            :state="itemdescricaostate"
+                            label="Descrição"
+                            label-for="descricao-input"
+                            invalid-feedback="Descrição não preenchido"
+                    >
+                        <b-form-input
+                                id="descricao-input"
+                                v-model="itemdescricao"
+                                :state="itemdescricaostate"
+                                required
+                        ></b-form-input>
+                    </b-form-group>
+                    <b-form-group
+                            :state="prioridadestate"
+                            label="Prioridade"
+                            label-for="prioridade-input"
+                            invalid-feedback="Prioridade não preenchido"
+                    >
+                        <b-form-select v-model="selected" :options="options" :state="prioridadestate" size="sm" class="mt-3"></b-form-select>
+                    </b-form-group>
                 </form>
-            </div>
-
+            </b-modal>
 
         </b-container>
     </div>
@@ -106,51 +135,118 @@
 </template>
 
 <script>
-    import firebase from 'firebase'
-    import { db } from '../main'
+    import { fb } from '../main';
     export default {
         name: "Home",
         data() {
             return {
-                // items: [
-                //     { titulo: 'titulo teste', descricao: 'Dickerson', prioridade: 'Macdonald',pos:'1'},
-                //     { titulo: 'titulo teste', descricao: 'Larsen', prioridade: 'Shaw',pos:2},
-                //     { titulo: 'titulo teste', descricao:'Geneva', prioridade: 'Wilson',pos:3},
-                //     { titulo: 'titulo teste', descricao: 'Jami', prioridade: 'Carney',pos:4}
-                // ],
-                comics: [],
-                name: '',
-                image: ''
+                items:[],
+                itemLista:{},
+                itemtitulo:'',
+                itemdescricao:'',
+                selected:null,
+                options: [
+                    { value: null, text: 'Por favor selecione uma opção' },
+                    { value: 'Baixa', text: 'Baixa' },
+                    { value: 'Media', text: 'Media' },
+                    { value: 'Alta', text: 'Alta' },
+                ],
+                itemtitulostate:null,
+                itemdescricaostate:null,
+                prioridadestate:null,
+                ref: fb.firestore().collection('items'),
+                usuario: fb.auth().currentUser
             }
         },
-        firestore () {
-            return {
-                comics: db.collection('comics')
-            }
+        created () {
+            this.ref.onSnapshot((querySnapshot) => {
+                this.items = [];
+                querySnapshot.forEach((doc) => {
+                    if(this.usuario.email == doc.data().usuario){
+                        this.items.push({
+                            key: doc.id,
+                            'titulo': doc.data().titulo,
+                            'descricao': doc.data().descricao,
+                            'prioridade': doc.data().prioridade,
+                            'posicao': doc.data().posicao,
+                            'status': doc.data().status,
+                            'usuario': doc.data().usuario
+                        });
+                    }
+                });
+            });
         },
         methods: {
-            linkClass(idx) {
-                if (this.tabIndex === idx) {
-                    return ['bg-primary', 'text-light']
-                } else {
-                    return ['bg-light', 'text-info']
+            checkFormValidity() {
+                const valid = this.$refs.form_add_item.checkValidity();
+                this.itemtitulostate = valid ? 'valid' : 'invalid';
+                this.itemdescricaostate = valid ? 'valid' : 'invalid';
+                this.prioridadestate = valid ? 'valid' : 'invalid';
+                return valid
+            },
+            resetModalItem() {
+                this.itemtitulo = '';
+                this.itemdescricao = '';
+                this.selected = null;
+                this.itemtitulostate=null;
+                this.itemdescricaostate=null;
+                this.prioridadestate=null;
+            },
+            handleOk(bvModalEvt) {
+                // Prevent modal from closing
+                bvModalEvt.preventDefault();
+                // Trigger submit handler
+                this.handleSubmit();
+            },
+            handleSubmit() {
+                // Exit when the form isn't valid
+                if (!this.checkFormValidity()) {
+                    return
                 }
+
+                this.itemLista={
+                    'titulo': this.itemtitulo,
+                    'descricao':this.itemdescricao,
+                    'prioridade' : this.selected,
+                    'posicao': (this.items.length + 1),
+                    'status': 'aberto',
+                    'usuario': this.usuario.email
+                };
+                this.ref.add(this.itemLista).then((docRef) => {
+                    this.resetModalItem();
+                })
+                .catch((error) => {
+                    alert("Error adding document: ", error);
+                });
+
+                // Hide the modal manually
+                this.$nextTick(() => {
+                    this.$refs.modal_add_item.hide();
+                })
             },
             logout: function() {
-                firebase.auth().signOut().then(() => {
+                fb.auth().signOut().then(() => {
                     this.$router.replace('login')
                 })
             },
-            addComic (name, image) {
-                const createdAt = new Date()
-                db.collection('comics').add({ name, image, createdAt })
-                // Clear values
-                this.name = ''
-                this.image = ''
+            deleteItem (id) {
+                fb.firestore().collection('items').doc(id).delete().then(() => {
+                    //ação ao deletar item
+                }).catch((error) => {
+                    alert("Error removing document: ", error);
+                });
             },
-            deleteComic (id) {
-                db.collection('comics').doc(id).delete()
-            },
+            updateItemStatus(item){
+                const updateRef = fb.firestore().collection('items').doc(item.key);
+                updateRef.set(item).then((docRef) => {
+                   //ação update
+                })
+                .catch((error) => {
+                    alert("Error adding document: ", error);
+                });
+
+            }
+
         }
     }
 </script>

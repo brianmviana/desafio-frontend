@@ -6,13 +6,11 @@ import router from './router';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-// import firebase from 'firebase';
-// import VueFire from 'vuefire'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-// Vue.use(VueFire);
 
 Vue.use(BootstrapVue);
+Vue.config.productionTip = false;
 
 //Variavel de configuração do firebase
 const firebaseConfig = {
@@ -27,12 +25,10 @@ const firebaseConfig = {
 
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
-Vue.config.productionTip = false;
 
 //Variavel do banco de dados
-export const db = firebase.firestore();
-
-/* eslint-disable no-new */
+export const fb = firebase;
+    /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,

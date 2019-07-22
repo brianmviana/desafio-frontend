@@ -1,10 +1,10 @@
 <template>
     <div class="sign-up">
-        <p>Let's create a new account !</p>
-        <input type="text" v-model="email" placeholder="Email"><br>
-        <input type="password" v-model="password" placeholder="Password"><br>
-        <button @click="signUp">Sign Up</button>
-        <span>or go back to <router-link to="/login">login</router-link>.</span>
+        <p>Vamos criar uma nova conta !</p>
+        <input type="text" v-model="email" placeholder="E-mail"><br>
+        <input type="password" v-model="password" placeholder="Senha"><br>
+        <button @click="signUp">Inscrever-se</button>
+        <span>ou volte para <router-link to="/login">login</router-link>.</span>
     </div>
 </template>
 
@@ -14,7 +14,6 @@
         name: 'SignUp',
         data() {
             return {
-                nome:'',
                 email: '',
                 password: ''
             }
